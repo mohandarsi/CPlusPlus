@@ -6,6 +6,10 @@
         "cwd": "${workspaceRoot}/build"
     },
     "args": ["-c"],
+    "presentation": {
+        // Reveal the output.
+        "reveal": "always"
+    },
     "tasks": [
         {
             "label": "Generate",
@@ -15,10 +19,6 @@
                 "-DCMAKE_CXX_COMPILER:FILEPATH='C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/bin/cl.exe'",
                 ".."],
             "group": "build",
-            "presentation": {
-                // Reveal the output.
-                "reveal": "always"
-            },
             "problemMatcher": "$msCompile"
         },
         {
@@ -28,23 +28,21 @@
             "args": ["--build", "${workspaceRoot}/build", 
                 "--config",
                 "Release"],
-
-           
             "group": "build",
-            "presentation": {
-                "reveal": "always"
-            },
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "Ninja Example",
+            "label": "Ninja",
             "type": "shell",
-            "command": "echo Hello",
-            "problemMatcher": [],
+            "command": "cmake",
+            "problemMatcher": "$msCompile",
              "args": ["-G", "Ninja", 
                 "-DCMAKE_CXX_COMPILER:FILEPATH='C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/bin/cl.exe'",
+                "-DCMAKE_C_COMPILER:FILEPATH='C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/bin/cl.exe'",
                 "-DCMAKE_MAKE_PROGRAM='C:/Program Files/CMake/bin/ninja.exe'",
-                "-DCMAKE_BUILD_TYPE=Debug", ".."],
+                "-DCMAKE_BUILD_TYPE=Release", ".."],
+                //C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/bin/vcvars32.bat 
+                // cmake -G Ninja -DCMAKE_CXX_COMPILER:FILEPATH="C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/bin/cl.exe" -DCMAKE_MAKE_PROGRAM="C:/Program Files/CMake/bin/ninja.exe" -DCMAKE_C_COMPILER:FILEPATH="C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/bin/cl.exe" -DCMAKE_BUILD_TYPE=Debug ..
         }
     ]
 }
