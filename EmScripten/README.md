@@ -1,7 +1,8 @@
 # EMScripten with CMake with Visual code on windows
 
 
-###SetUp  
+### SetUp  
+- Install Python
 - Install Emscripten and place the SDK in C:/EmScripten/
 - Install VS Code  
 - Install CMake and Ninja 
@@ -20,7 +21,7 @@ From VS Code - Run following tasks
 
 
 	  
-###Execute	  
+### Execute	  
 Run follwoing command in command promt from build directory.  
 ```
    python -m http.server 8000 --bind 127.0.0.1  
