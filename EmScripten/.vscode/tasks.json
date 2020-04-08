@@ -12,7 +12,14 @@
     },
     "tasks": [
         {
-            "label": "Ninja",
+            "label": "Clean",
+            "type": "shell",
+            "command": "del * /S /Q",
+            "problemMatcher": "$msCompile",
+            "group": "build"
+        },
+        {
+            "label": "Generate",
             "type": "shell",
             "command": "cmake",
             "problemMatcher": "$msCompile",
@@ -20,6 +27,18 @@
                 "-DCMAKE_TOOLCHAIN_FILE='${workspaceRoot}/emscripten.cmake'",
                 "-DCMAKE_MAKE_PROGRAM='C:/Program Files/CMake/bin/ninja.exe'",
                 "-DCMAKE_BUILD_TYPE=Release", ".."],
+                
+            "group": {
+                    "kind": "build",
+                    "isDefault": true
+                },
+            "dependsOn":["Clean"],
+        },
+        {
+            "label": "Build",
+            "type": "shell",
+            "command": "ninja",
+            "problemMatcher": "$msCompile",
         }
     ]
 }

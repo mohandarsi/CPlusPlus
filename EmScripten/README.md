@@ -1,18 +1,24 @@
 # EMScripten with CMake with Visual code on windows
 
-Create an build folder  after cloning
-
-Open VSCode  
-From VS Code - Run tasks  
-1) Run Ninja Task - To generate project files in Build folder.  
-2) TODO Run Ninja build
 
 ###SetUp  
 - Install Emscripten and place the SDK in C:/EmScripten/
 - Install VS Code  
-- Install Extensions  
+- Install CMake and Ninja 
+- Install Extensions  (not mandatory)
       Microsoft c++  
       Cmake  
+	  
+### Build
+
+Create an *build* folder  in the project directory if not exists.
+
+Open VSCode  
+From VS Code - Run following tasks  
+1) Run Generate  - To generate project files in Build folder.  
+2) Run Build - Produces webasm in Build directory
+
+
 	  
 ###Execute	  
 Run follwoing command in command promt from build directory.  
