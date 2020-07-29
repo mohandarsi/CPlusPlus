@@ -1,0 +1,6 @@
+sudo apt-get install build-essential gdb
+sudo apt-get install cmake
+sudo apt install git-all
+sudo apt install clang
+
+install vscode and plugins:- c++ extension and cmake extensions.
