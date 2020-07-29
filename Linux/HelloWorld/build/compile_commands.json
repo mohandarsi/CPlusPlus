@@ -1,7 +1,0 @@
-[
-{
-  "directory": "/home/mohan/Documents/Study/CPP/CPlusPlus/Linux/HelloWorld/build",
-  "command": "/usr/bin/clang++-10    -g   -o CMakeFiles/HelloWorld.dir/main.cpp.o -c /home/mohan/Documents/Study/CPP/CPlusPlus/Linux/HelloWorld/main.cpp",
-  "file": "/home/mohan/Documents/Study/CPP/CPlusPlus/Linux/HelloWorld/main.cpp"
-}
-]

@@ -1,1 +1,0 @@
-/usr/bin/clang++-10  -g  -rdynamic CMakeFiles/HelloWorld.dir/main.cpp.o  -o HelloWorld 
