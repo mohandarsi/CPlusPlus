@@ -2,5 +2,22 @@ sudo apt-get install build-essential gdb
 sudo apt-get install cmake
 sudo apt install git-all
 sudo apt install clang
+sudo apt install lldb
 
-install vscode and plugins:- c++ extension and cmake extensions.
+install vscode and plugins:- 
+c++ tools - https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools
+cmake lang support-https://marketplace.visualstudio.com/items?itemName=twxs.cmake
+cmake toos-https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools
+CodeLLDB-https://marketplace.visualstudio.com/items?itemName=vadimcn.vscode-lldb
+
+Git commands
+------------
+git config --global user.email "<emailID>"
+git config --global user.name "<username>"
+git config credential.helper store
+
+git add <directory name>
+git status
+git push
+git commit -m <comment>
+
