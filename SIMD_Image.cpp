@@ -24,13 +24,16 @@ void print(std::vector<unsigned char> &image)
 
 int main(int argc, char* argv[]) {
 
+    // create 2 dummy 2k images
     constexpr auto SIZE = 2048*2048;
     std::vector<unsigned char> image1(SIZE);
-    fillRandomImage(image1);
     std::vector<unsigned char> image2(SIZE);
-    fillRandomImage(image2);
     std::vector<unsigned char> image3(SIZE);
-
+    
+    //Fill Image1 and image2 with random colors
+    fillRandomImage(image1);
+    fillRandomImage(image2);
+    
     auto begin = std::chrono::steady_clock::now();
     for (auto i = 0; i < SIZE; i += 1)
     {
