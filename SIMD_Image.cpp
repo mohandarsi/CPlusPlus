@@ -1,4 +1,3 @@
-// Type your code here, or load an example.
 #include <immintrin.h>
 #include <iostream>
 #include <vector>
