@@ -1,80 +1,91 @@
+// Type your code here, or load an example.
 #include <immintrin.h>
 #include <iostream>
-#include <stdio.h>
 #include <vector>
+#include <random>
 #include <algorithm>
-#include <ctime>
 #include <chrono>
 
-void fillRandomImage(std::vector<unsigned char> &image)
+
+using Image = std::vector<unsigned char>;
+constexpr auto SIZE = 2048*2048; // 2048 width and 2048 height
+
+void fillRandomImage(Image &image)
 {
-    std::srand(unsigned(std::time(nullptr)));
-    std::generate(image.begin(), image.end(), std::rand);
+    //https://stackoverflow.com/questions/21516575/fill-a-vector-with-random-numbers-c
+    static std::uniform_int_distribution<unsigned char> distribution(
+        std::numeric_limits<unsigned char>::min(),
+        std::numeric_limits<unsigned char>::max());
+    static std::default_random_engine generator;
+
+    std::generate(image.begin(), image.end(), []() { return distribution(generator); });
 }
 
-void print(std::vector<unsigned char> &image)
+void print(Image &image)
 {
-   //auto test =_mm256_load_si256((__m256i*)&image[0]);
+   //print only first few values
    for (unsigned short i = 0; i < 30; i += 1)
    {
-        printf("%d ", image[i]);
+        std::cout<< (int)image[i] << ' ';
    }
    std::cout<< std::endl;
 }
 
-int main(int argc, char* argv[]) {
+void vectorizeAdd(const Image &image1, const Image &image2, Image &image3)
+{
+    auto begin = std::chrono::steady_clock::now();
+    for (auto i = 0; i < SIZE; i += 16)
+    {
+        //load first 16 pixels from image1 & image2
+        auto first = _mm_load_si128 ((__m128i*)&image1[i]);
+        auto second = _mm_load_si128 ((__m128i*)&image2[i]);
+        //Add and clamp to max grey value.
+        auto result = _mm_adds_epu8(first,second);
+        _mm_store_si128((__m128i*)&image3[i],result);
+    }
+    auto end = std::chrono::steady_clock::now();
 
-    // create 2 dummy 2k images
-    constexpr auto SIZE = 2048*2048;
-    std::vector<unsigned char> image1(SIZE);
-    std::vector<unsigned char> image2(SIZE);
-    std::vector<unsigned char> image3(SIZE);
-    
-    //Fill Image1 and image2 with random colors
-    fillRandomImage(image1);
-    fillRandomImage(image2);
-    
+    std::cout<<"vectorize loop took:"<< (std::chrono::duration_cast<std::chrono::milliseconds>(end-begin)).count() << "ms" << std::endl;
+}
+
+void scalarAdd(const Image &image1, const Image &image2, Image &image3)
+{
     auto begin = std::chrono::steady_clock::now();
     for (auto i = 0; i < SIZE; i += 1)
     {
-        image3[i] = image1[i] + image2[i];
+       const auto result = image1[i] + image2[i];
+       //clamp to max grey value.
+       image3[i] = result > 255 ? 255: result;
     }
     auto end = std::chrono::steady_clock::now();
  
-    print(image3);
+    std::cout<<"Scalar loop took:"<< (std::chrono::duration_cast<std::chrono::milliseconds>(end-begin)).count() << "ms" << std::endl;
+}
 
-    std::cout<<"Scalar loop Time taken:"<< (std::chrono::duration_cast<std::chrono::milliseconds>(end-begin)).count() << "ms" << std::endl;
+int main(int argc, char* argv[]) 
+{
+
+    Image image1(SIZE);
+    fillRandomImage(image1);
+    Image image2(SIZE);
+    fillRandomImage(image2);
+
+    //dispaly values in images
+    std::cout<<"image 1: "; print(image1);
+    std::cout<<"image 1: "; print(image2);
+
+    Image image3(SIZE);
+    Image image4(SIZE);
+
+    scalarAdd(image1,image2,image3);
+    print(image3);
+       
+    vectorizeAdd(image1,image2,image4);
+    print(image4);
+
+    const auto same = std::equal(image3.begin(), image3.end(), image4.begin(),image4.end());
+
+   if(same)  std::cout << "Both images are same";
    
-    std::fill(image3.begin(), image3.end(), 0);
-    print(image3);
-    
-    begin = std::chrono::steady_clock::now();
-    for (auto i = 0; i+16 < SIZE; i += 16)
-    {
-        auto first = _mm_load_si128 ((__m128i*)&image1[i]);
-        auto second = _mm_load_si128 ((__m128i*)&image2[i]);
-        auto result = _mm_add_epi8(first,second);
-        _mm_store_si128((__m128i*)&image3[i],result);
-    }
-    end = std::chrono::steady_clock::now();
-
-    print(image3);
-    std::cout<<"vector loop Time taken:"<< (std::chrono::duration_cast<std::chrono::milliseconds>(end-begin)).count() << "ms" << std::endl;
-
-    #define ARRAY_LENGTH 8
-    auto first = _mm_set_epi16(10, 20, 30, 40, 50, 60, 70, 80);
-    auto second = _mm_set_epi16(5, 5, 5, 5, 5, 5, 5, 5);
-    auto result = _mm_add_epi16(first, second);
-
-    short* values = (short*) &result;
-   
-    for (
-        unsigned short i = 0;
-        i < ARRAY_LENGTH;
-        i += 1
-    ) {
-        printf("%d ", values[i]);
-    }
-
-    return 0;
+   return 0;
 }
