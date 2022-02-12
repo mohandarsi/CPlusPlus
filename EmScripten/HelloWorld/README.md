@@ -17,7 +17,7 @@ Create an *build* folder  in the project directory if not exists.
 Open VSCode  
 From VS Code - Run following tasks from *Terminal* menu
 
-1) Generate  - To generate project files in Build folder.  
+1) Generate Web - To generate project files in Build folder.  
 2) Build - Produces webasm and associated js files in Build directory.
 
 ## Execute
@@ -26,6 +26,6 @@ Run follwoing command in command promt from build directory.
 
 ```
    python -m http.server 8000 --bind 127.0.0.1  
-   From firefox browser browse to http://127.0.0.1:8000/helloworld.html
+   From firefox browser browse to http://127.0.0.1:8000/ and select html file
    
 ```
