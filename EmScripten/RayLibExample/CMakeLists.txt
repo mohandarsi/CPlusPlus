@@ -1,12 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
-add_definitions(-std=c++17) 
 project(RayLibExample)
 
-set(**DCMAKE_BUILD_TYPE**** debug**)
-
-IF(NOT DCMAKE_BUILD_TYPE)
-    SET(DCMAKE_BUILD_TYPE Release)
-ENDIF()
+set(CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
 set(FETCHCONTENT_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/external CACHE STRING "Base dir for thirdparty libs" )
@@ -34,6 +29,6 @@ if (EMSCRIPTEN)
 
  endif ()
 
-target_link_libraries(${PROJECT_NAME} PUBLIC raylib)
+target_link_libraries(${PROJECT_NAME} PUBLIC raylib raylib_cpp)
 
 

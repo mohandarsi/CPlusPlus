@@ -37,6 +37,25 @@
             "dependsOn":["Clean"],
         },
         {
+            "label": "Generate WinBuild",
+            "type": "shell",
+            "command": "cmake",
+            "problemMatcher": "$msCompile",
+             "args": ["-G", "Ninja",
+                "-B build",
+                "-DPLATFORM=Desktop",
+                "-DCMAKE_C_COMPILER='C:/Program Files/LLVM/bin/clang.exe'",
+                "-DCMAKE_CXX_COMPILER='C:/Program Files/LLVM/bin/clang++.exe'",
+                "-DCMAKE_MAKE_PROGRAM='C:/Program Files/CMake/bin/ninja.exe'",
+                "-DCMAKE_BUILD_TYPE=Release", "."],
+                
+            "group": {
+                    "kind": "build",
+                    "isDefault": true
+                },
+            "dependsOn":["Clean"],
+        },
+        {
             "label": "Build",
             "type": "shell",
             "command": "ninja -C build",
