@@ -1,4 +1,4 @@
-# C++ WebAssembly - EMScripten+CMake+Visual code+Windows
+# C++ WebAssembly - EMScripten+CMake+Visual code
 
 ## SetUp
 
@@ -6,9 +6,11 @@
 - Install [Emscripten](https://emscripten.org/docs/getting_started/downloads.html) and place the SDK in C:/EmScripten/
 - Install [VS Code](https://code.visualstudio.com/)
 - Install [CMake](https://cmake.org/) and [Ninja](https://ninja-build.org/)
-- Install Extensions  (not mandatory)
+- Install [Calng](https://releases.llvm.org/download.html) to build as desktop executable.
+- Install Extensions
       Microsoft c++  
-      Cmake  
+      Cmake
+      CodeLLDB - to debug in windows Clang c++
 
 ## Build
 
