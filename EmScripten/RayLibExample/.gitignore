@@ -5,7 +5,7 @@
 # Xcode
 #
 build/
-external/
+external/*
 !external/CMakeLists.txt
 *.pbxuser
 !default.pbxuser
