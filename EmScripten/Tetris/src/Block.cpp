@@ -1,50 +1,52 @@
-#include "Piece.h"
+#include "Block.h"
 #include<map>
+#include <ctime>
+#include <cstdlib>
 #include <random>
 #include "Board.h"
 #include "Cell.h"
 #include "Const.h"
 
-static const std::map<PieceName, PieceLayout> blockNameToLayOut =
+static const std::map<BlockName, BlockLayout> blockNameToLayOut =
 {
      {
-         PieceName::I_BLOCK, { 4, { { {0,0,0,0},
+         BlockName::I_BLOCK, { 4, { { {0,0,0,0},
                                         {1,1,1,1},
                                         {0,0,0,0},
                                         {0,0,0,0} } }, 4, 3 }  },
 
      {
-         PieceName::T_BLOCK, { 3, {  { {0,1,0,0},
+         BlockName::T_BLOCK, { 3, {  { {0,1,0,0},
                                    {1,1,1,0},
                                    {0,0,0,0},
                                    {0,0,0,0} }}, 3, 2 }  },
 
      {
-         PieceName::S_BLOCK, { 3, { { {0,1,1,0},
+         BlockName::S_BLOCK, { 3, { { {0,1,1,0},
                                   {1,1,0,0},
                                   {0,0,0,0},
                                   {0,0,0,0} } }, 3, 2 }  },
 
      {
-         PieceName::O_BLOCK, { 2, { {{1,1,0,0},
+         BlockName::O_BLOCK, { 2, { {{1,1,0,0},
                                   {1,1,0,0},
                                   {0,0,0,0},
                                   {0,0,0,0} }}, 2, 2 }  },
 
      {
-         PieceName::Z_BLCOK, { 3, { {{1,1,0,0},
+         BlockName::Z_BLCOK, { 3, { {{1,1,0,0},
                                   {0,1,1,0},
                                   {0,0,0,0},
                                   {0,0,0,0} }}, 3, 2 }  },
 
      {
-         PieceName::J_BLOCK, { 3, {{  {1,0,0,0},
+         BlockName::J_BLOCK, { 3, {{  {1,0,0,0},
                                    {1,1,1,0},
                                    {0,0,0,0},
                                    {0,0,0,0} }}, 3, 2 }  },
 
      {
-         PieceName::L_BLOCK, { 3, { { {0,0,1,0},
+         BlockName::L_BLOCK, { 3, { { {0,0,1,0},
                                    {1,1,1,0},
                                    {0,0,0,0},
                                    {0,0,0,0} }}, 3, 2 }  }
@@ -52,9 +54,9 @@ static const std::map<PieceName, PieceLayout> blockNameToLayOut =
 };
 
 
-static constexpr std::array<Color,7> colors = { RED, BLUE, GREEN, LIGHTGRAY, SKYBLUE, PINK, PURPLE};
+static constexpr std::array<Color,7> colors = { RED, BLUE, GREEN, LIGHTGRAY, MAROON, PINK, YELLOW};
 
-Piece::Piece(const Board& board,const PieceName name, const Color& color):
+Block::Block(const Board& board,const BlockName name, const Color& color):
 m_board{board},
 m_position{},
 m_color{color},
@@ -62,7 +64,7 @@ m_layout{blockNameToLayOut.at(name)}
 {
 }
 
-void Piece::rotateLeft()
+void Block::rotateLeft()
 {
     const auto layout = m_layout.layout;
     for (unsigned ix = 0; ix < m_layout.size; ++ix)
@@ -71,7 +73,7 @@ void Piece::rotateLeft()
 
 }
 
-void Piece::rotateRight()
+void Block::rotateRight()
 {
     const auto layout = m_layout.layout;
     for (unsigned ix = 0; ix < m_layout.size; ++ix)
@@ -79,12 +81,12 @@ void Piece::rotateRight()
             m_layout.layout[iy][m_layout.size - 1 - ix] = layout[ix][iy];
 }
 
-void Piece::translate(const raylib::Vector2& translation)
+void Block::translate(const raylib::Vector2& translation)
 {
     m_position += translation;
 }
 
-void Piece::draw(const raylib::Vector2& location, bool shallow)
+void Block::draw(const raylib::Vector2& location, bool shallow)
 {
     const auto cellSize = m_board.getCellSize() ;
 
@@ -95,7 +97,7 @@ void Piece::draw(const raylib::Vector2& location, bool shallow)
             if(m_layout.layout[iy][ix] != 0x0)
             {
                 Cell c(m_color, m_board.getCellSize());
-                //draw the cell relative position to the piece.
+                //draw the cell relative position to the blcok.
                 raylib::Vector2 cellLocation = location +  raylib::Vector2{ ix * cellSize ,  iy * cellSize };
                 c.draw(cellLocation, shallow);
             }
@@ -103,39 +105,18 @@ void Piece::draw(const raylib::Vector2& location, bool shallow)
     }
 }
 
-bool Piece::collides() const
+std::unique_ptr<Block> Block::createRandomBlock(const Board& m_board)
 {
-    const auto hCells = m_board.getNumberOfHCells();
-    const auto vCells = m_board.getNumberOfVCells();
-
-    for(auto iy=0;iy < m_layout.size ;iy++)
-    {
-        for(auto ix=0; ix < m_layout.size ;ix++)
-        {
-            auto position = m_position + raylib::Vector2 {ix,iy};
-
-            if(m_layout.layout[iy][ix] != 0)
-            {
-                if(position.x < 0 || position.x >= hCells || position.y < 0 || position.y >= vCells)
-                    return true;
-                // if(m_board.getCell(position.y,position.x).a != 0)
-                //     return true;
-            }
-        }
-    }
-    return false;
-}
-
-std::unique_ptr<Piece> Piece::createRandomPiece(const Board& m_board)
-{
-    static std::default_random_engine generator;
-    static std::uniform_int_distribution<int> pieceDist(0, blockNameToLayOut.size()-1);
+    static std::random_device randomDevice;
+    static std::mt19937 blockGenerator(randomDevice()); 
+    static std::mt19937 colorGenerator(randomDevice()); 
+    static std::uniform_int_distribution<int> blockNameDist(0, blockNameToLayOut.size()-1);
     static std::uniform_int_distribution<int> colorDist(0, colors.size()-1);
+  
+    const auto blockName = static_cast<BlockName>(blockNameDist(blockGenerator));
+    const auto randomColor = colors[colorDist(colorGenerator)]; 
 
-    const auto blockName = static_cast<PieceName>(pieceDist(generator));
-    const auto randomColor = colors[colorDist(generator)]; 
-
-    auto piece = std::make_unique<Piece>(m_board,blockName, randomColor);
+    auto piece = std::make_unique<Block>(m_board,blockName, randomColor);
 
     raylib::Vector2 cellLocation;
     cellLocation.x = (m_board.getNumberOfHCells() - piece->m_layout.size) / 2;
@@ -144,3 +125,4 @@ std::unique_ptr<Piece> Piece::createRandomPiece(const Board& m_board)
 
     return piece;
 }
+

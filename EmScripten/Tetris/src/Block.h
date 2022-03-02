@@ -3,8 +3,9 @@
 
 #include <array>
 #include <memory>
+#include "utils.h"
 
-enum class PieceName
+enum class BlockName
 {
 	I_BLOCK,
 	J_BLOCK,
@@ -15,36 +16,37 @@ enum class PieceName
 	Z_BLCOK
 };
 
-struct PieceLayout
+struct BlockLayout
 {
 	unsigned size;
 	std::array<std::array<int, 4>, 4> layout;
-	//unsigned layout[4][4];
 	unsigned width;
 	unsigned height;
 };
 
 class Board;
 
-class Piece
+class Block
 {
-	
 public:
-	Piece(const Board& m_board, const PieceName name, const Color& color);
+	Block(const Board& m_board, const BlockName name, const Color& color);
 
-	static std::unique_ptr<Piece> createRandomPiece(const Board& m_board);
-	
-	bool collides() const;
+	static std::unique_ptr<Block> createRandomBlock(const Board& m_board);
+
 	void rotateRight();
 	void rotateLeft();
 	void translate(const raylib::Vector2& translation);
 	void draw(const raylib::Vector2& location, bool shallow);
-	const raylib::Vector2& getPosition() const  {return m_position;}
+
+    GETTER(const BlockLayout&, Layout, m_layout)
+	GETTER(const raylib::Vector2&, Position, m_position)
+	GETTER(const Color&, color, m_color)
 
 private:
+
     const Board& m_board;
 	raylib::Vector2 m_position;
 	Color m_color;
-	PieceLayout m_layout;
+	BlockLayout m_layout;
 };
 

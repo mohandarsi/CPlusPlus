@@ -4,7 +4,7 @@
 #include<memory>
 
 #include "Board.h"
-#include "Piece.h"
+#include "Block.h"
 #include "Timer.h"
 
 class Game
@@ -18,12 +18,15 @@ private:
 	void input();
 	void update();
 	void draw();
-	void drawPiece();
-	void slideCurrentPiece(const raylib::Vector2& normalizedPosition);
+	void drawBlock();
+	bool moveCurrentBlock(const raylib::Vector2& normalizedPosition);
+	void placeCurrentBlock();
 
 private:
 	raylib::Window m_window;
 	Board m_board;
-	std::unique_ptr<Piece> m_currentPiece;
+	std::unique_ptr<Block> m_currentBlock;
 	Timer m_slideTimer;
+	Timer m_xmoveTimer;
+	Timer m_ymoveTimer;
 };

@@ -1,7 +1,7 @@
 #include "Board.h"
 
 #include "Const.h"
-#include "Piece.h"
+#include "Block.h"
 
 Board::Board(int hCells, int vCells, int cellSize) :
     m_hCells(hCells),
@@ -9,6 +9,51 @@ Board::Board(int hCells, int vCells, int cellSize) :
     m_cellSize(cellSize + CELL_MARGIN_THICKNESS),
     m_cellMatrix(vCells, std::vector<Cell>(hCells,Cell(BLANK,m_cellSize)))
 {
+}
+
+bool Board::collides(const Block& block) const
+{
+    const auto& layout = block.getLayout();
+    const auto& position = block.getPosition();
+
+    for(auto iy=0;iy < layout.size ;iy++)
+    {
+        for(auto ix=0; ix < layout.size ;ix++)
+        {
+            const auto tx= position.x+ix; 
+            const auto ty = position.y+iy;
+
+            if(layout.layout[iy][ix] != 0)
+            {
+                if(tx < 0 || tx >= m_hCells || ty< 0 || ty>= m_vCells)
+                    return true;
+
+                if(m_cellMatrix[ty][tx].getColor().a != 0)
+                     return true;
+            }
+        }
+    }
+    return false;
+}
+
+void Board::placeBlock(const Block& block)
+{ 
+    const auto& layout = block.getLayout();
+    const auto& color = block.getcolor();
+    const auto& position = block.getPosition();
+
+    for (unsigned iy = 0; iy < layout.size; ++iy)
+    {
+        for (unsigned ix = 0; ix < layout.size; ++ix)
+        {
+            const auto tx= position.x+ix; 
+            const auto ty = position.y+iy;
+            if(layout.layout[iy][ix] != 0x0)
+            {
+                m_cellMatrix[ty][tx].setColor(color);
+            }
+        }
+    }
 }
 
 void Board::drawGrid(const raylib::Vector2& location)
