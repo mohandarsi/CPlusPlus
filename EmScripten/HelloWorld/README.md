@@ -1,4 +1,4 @@
-# C++ WebAssembly - EMScripten+CMake+Visual code+Windows
+# C++ WebAssembly - EMScripten+CMake+Visual code
 
 ## SetUp
 
@@ -24,7 +24,7 @@ From VS Code - Run following tasks from *Terminal* menu
 
 Run follwoing command in command promt from build directory.  
 
-```
+```bash
    python -m http.server 8000 --bind 127.0.0.1  
    From firefox browser browse to http://127.0.0.1:8000/ and select html file
    

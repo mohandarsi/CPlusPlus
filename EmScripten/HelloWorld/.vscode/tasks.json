@@ -3,7 +3,10 @@
     // for the documentation about the tasks.json format
     "version": "2.0.0",
     "options": {
-        "cwd": "${workspaceRoot}/build"
+        "env": {
+            "EMSCRIPTEN_SDK": "C:/EmScripten/emsdk"
+          },
+         "cwd": "${workspaceRoot}"
     },
     "args": ["-c"],
     "presentation": {
@@ -14,19 +17,39 @@
         {
             "label": "Clean",
             "type": "shell",
-            "command": "del * /S /Q",
+            "command": "if exist build del /S /Q build\\* build",
             "problemMatcher": "$msCompile",
             "group": "build"
         },
         {
-            "label": "Generate",
+            "label": "Generate Web",
             "type": "shell",
             "command": "cmake",
             "problemMatcher": "$msCompile",
-             "args": ["-G", "Ninja", 
-                "-DCMAKE_TOOLCHAIN_FILE='${workspaceRoot}/emscripten.cmake'",
-                "-DCMAKE_MAKE_PROGRAM='C:/Program Files/CMake/bin/ninja.exe'",
-                "-DCMAKE_BUILD_TYPE=Release", ".."],
+             "args": ["-G", "Ninja",
+                "-B build",
+                "-DCMAKE_TOOLCHAIN_FILE='C:/EmScripten/emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake'",
+                "-DCMAKE_MAKE_PROGRAM='ninja.exe'",
+                "-DCMAKE_BUILD_TYPE=Release", "."],
+                
+            "group": {
+                    "kind": "build",
+                    "isDefault": true
+                },
+            "dependsOn":["Clean"],
+        },
+        {
+            "label": "Generate WinBuild",
+            "type": "shell",
+            "command": "cmake",
+            "problemMatcher": "$msCompile",
+             "args": ["-G", "Ninja",
+                "-B build",
+                "-DPLATFORM=Desktop",
+                "-DCMAKE_C_COMPILER='clang.exe'",
+                "-DCMAKE_CXX_COMPILER='clang++.exe'",
+                "-DCMAKE_MAKE_PROGRAM='ninja.exe'",
+                "-DCMAKE_BUILD_TYPE=Debug", "."],
                 
             "group": {
                     "kind": "build",
@@ -37,7 +60,7 @@
         {
             "label": "Build",
             "type": "shell",
-            "command": "ninja",
+            "command": "ninja -C build",
             "problemMatcher": "$msCompile",
         }
     ]

@@ -1,26 +1,25 @@
 cmake_minimum_required(VERSION 3.0)
+project(HelloWasm)
 
-set(**DCMAKE_BUILD_TYPE**** debug**)
+set(CMAKE_CXX_STANDARD 17)
 
-IF(NOT DCMAKE_BUILD_TYPE)
-    SET(DCMAKE_BUILD_TYPE Release)
-ENDIF()
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
 
-MESSAGE("Build type: " ${DCMAKE_BUILD_TYPE})
+file(GLOB_RECURSE SRC_LIST ${CMAKE_SOURCE_DIR}/src/*.cpp
+                         ${CMAKE_SOURCE_DIR}/src/*.h
 
-project(HelloWorld)
+)
 
-file(GLOB_RECURSE HELLOWORLD_SRC_LIST
-    src/*.cpp
-    src/*.h
-    include/*.h)
+add_executable(${PROJECT_NAME} ${SRC_LIST})
 
-set(HELLOWORLD_BINARY HelloWorld.html)
-add_executable(${HELLOWORLD_BINARY} ${HELLOWORLD_SRC_LIST})
+if (EMSCRIPTEN)
+    MESSAGE(STATUS "EMSCRIPTEN is enabled")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s USE_GLFW=3 -s ASSERTIONS=1 -s WASM=1 -s ASYNCIFY")
+    # Since WASM is used, ALLOW_MEMORY_GROWTH has no extra overheads
+    
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s ALLOW_MEMORY_GROWTH=1 --no-heap-copy")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -s ALLOW_MEMORY_GROWTH=1 --no-heap-copy")
+    set(CMAKE_EXECUTABLE_SUFFIX ".html") # This line is used to set your executable to build with the emscripten html template so that you can directly open it.
+ endif ()
 
-set_property(TARGET ${HELLOWORLD_BINARY} PROPERTY CXX_STANDARD 17)
-
-
-MESSAGE("CMAKE_RUNTIME_OUTPUT_DIRECTORY: " ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-MESSAGE("CMAKE_CURRENT_SOURCE_DIR: " ${CMAKE_CURRENT_SOURCE_DIR})
 

@@ -14,7 +14,7 @@
         {
             "label": "Clean",
             "type": "shell",
-            "command": "del /S /Q build\\* build",
+            "command": "if exist build del /S /Q build\\* build",
             "problemMatcher": "$msCompile",
             "group": "build"
         },
